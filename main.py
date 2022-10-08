@@ -72,28 +72,44 @@ def check_draw(grid):
 	for i in grid:
 		for j in i:
 			if j == "":
-				return [False, None]
+				return [False, None , None, None]
 
-	return [True, "draw"]
+	return [True, "draw", None, None]
 
 
 def check_result(grid):
 	if grid[0][0] == grid[0][1] == grid[0][2] and grid[0][0]!="":
-		return [True, grid[0][0]]
+		return [True, grid[0][0], 
+		(WIDTH//6,HEIGHT//6), 
+		(WIDTH-WIDTH//6,HEIGHT//6)]
 	if grid[1][0] == grid[1][1] == grid[1][2] and grid[1][0]!="":
-		return [True, grid[1][0]]
+		return [True, grid[1][0], 
+		(WIDTH,  HEIGHT//3 + HEIGHT//3), 
+		(WIDTH-WIDTH//6, HEIGHT//3 + HEIGHT//3)]
 	if grid[2][0] == grid[2][1] == grid[2][2] and grid[2][0]!="":
-		return [True, grid[2][0]]
+		return [True, grid[2][0], 
+		(WIDTH, HEIGHT - HEIGHT//6), 
+		(WIDTH-WIDTH//6, HEIGHT - HEIGHT//6)]
 	if grid[0][0] == grid[1][0] == grid[2][0] and grid[0][0]!="":
-		return [True, grid[0][0]]
+		return [True, grid[0][0], 
+		(WIDTH//6,HEIGHT//6), 
+		(WIDTH//6,HEIGHT - HEIGHT//6)]
 	if grid[0][1] == grid[1][1] == grid[2][1] and grid[0][1]!="":
-		return [True, grid[0][1]]
+		return [True, grid[0][1], 
+		(WIDTH//3 + WIDTH//6,HEIGHT//6), 
+		(WIDTH//3 + WIDTH//6,HEIGHT- HEIGHT//6)]
 	if grid[0][2] == grid[1][2] == grid[2][2] and grid[0][2]!="":
-		return [True, grid[0][2]]
+		return [True, grid[0][2], 
+		(WIDTH-WIDTH//6, HEIGHT//6), 
+		(WIDTH-WIDTH//6, HEIGHT- HEIGHT//6) ]
 	if grid[0][0] == grid[1][1] == grid[2][2] and grid[0][0]!="":
-		return [True, grid[0][0]]
+		return [ True, grid[0][0], 
+		(WIDTH//6, HEIGHT//6), 
+		(WIDTH- WIDTH//6, HEIGHT- HEIGHT//6) ]
 	if grid[0][2] == grid[1][1]== grid[2][0] and grid[0][2]!="":
-		return [True, grid[0][2]]
+		return [ True, grid[0][2], 
+		(WIDTH-WIDTH//6,HEIGHT//6), 
+		(WIDTH//6,HEIGHT- HEIGHT//6) ]
 
 	return check_draw(grid)
 
@@ -114,17 +130,23 @@ def run():
 		temp = progress_game(Xchance, grid)
 		grid = temp[0]
 		Xchance = temp[1]
-		result = check_result(grid)
-		game_over = result[0]
-		WINNING_PLAYER = result[1]
+		[game_over, WINNING_PLAYER, line_start, line_end] = check_result(grid)
 
 
 		SCREEN.fill((0,0,0))
 		draw_grid(grid)
 
+		if game_over:
+			draw_connecting_line(line_start, line_end)
 		
 		CLOCK.tick(FPS)
 		pygame.display.update()
+
+
+def draw_connecting_line(start_pos, end_pos):
+
+	width = 15
+	pygame.draw.line(SCREEN, (255,0,0), start_pos, end_pos, width)
 
 
 def game_over_screen():
@@ -162,7 +184,6 @@ def game_over_screen():
 				pygame.quit()
 				sys.exit()
 
-		SCREEN.fill((0,0,0))
 		game_over_text_x = (WIDTH - game_over_text.get_width())//2
 		SCREEN.blit(game_over_text, (game_over_text_x ,HEIGHT//3))
 		pygame.draw.rect(SCREEN, restart_btn_color, restart_btn)
