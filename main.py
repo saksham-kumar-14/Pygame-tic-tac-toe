@@ -37,7 +37,9 @@ def draw_grid(grid):
 	for i in grid:
 		for j in i:
 			item = FONT.render(j, True, (255,255,255))
-			SCREEN.blit(item, current_coordinate)
+			x = current_coordinate[0] + (WIDTH//3 - item.get_width())//2
+			y = current_coordinate[1] + (HEIGHT//3 - item.get_height())//2
+			SCREEN.blit(item, [ x, y] )
 			current_coordinate[0] += WIDTH//3
 		current_coordinate[0] = 0
 		current_coordinate[1] +=  HEIGHT//3
@@ -139,7 +141,7 @@ def game_over_screen():
 			game_over_text = FONT.render(f"Player {WINNING_PLAYER} has won!", True, (255,165,0))
 
 		btn_width, btn_height = 200,100
-		restart_btn_x, end_btn_x = (WIDTH//4)-(btn_width//2), ((3*WIDTH)//4)-(btn_width//2)
+		restart_btn_x, end_btn_x = (WIDTH//4)-(btn_width//2) , ((3*WIDTH)//4)-(btn_width//2)
 		btn_y = (HEIGHT//2)+100
 		restart_btn = pygame.Rect(restart_btn_x, btn_y, btn_width, btn_height)
 		end_btn = pygame.Rect(end_btn_x, btn_y, btn_width, btn_height)
@@ -161,14 +163,21 @@ def game_over_screen():
 				sys.exit()
 
 		SCREEN.fill((0,0,0))
-		SCREEN.blit(game_over_text, (0,HEIGHT//3))
+		game_over_text_x = (WIDTH - game_over_text.get_width())//2
+		SCREEN.blit(game_over_text, (game_over_text_x ,HEIGHT//3))
 		pygame.draw.rect(SCREEN, restart_btn_color, restart_btn)
 		pygame.draw.rect(SCREEN, end_btn_color, end_btn)
 
 		restart_btn_text = BNT_FONT.render("Restart",True,(255,255,255))
 		end_btn_text = BNT_FONT.render("Exit",True,(255,255,255))
-		SCREEN.blit(restart_btn_text, (restart_btn_x,btn_y))
-		SCREEN.blit(end_btn_text, (end_btn_x,btn_y))
+
+		restart_btn_text_x= restart_btn_x + (btn_width-restart_btn_text.get_width())//2
+		restart_btn_text_y = btn_y + (btn_height-restart_btn_text.get_height())//2
+		end_btn_text_x= end_btn_x + (btn_width-end_btn_text.get_width())//2
+		end_btn_text_y = btn_y + (btn_height-end_btn_text.get_height())//2
+
+		SCREEN.blit(restart_btn_text, (restart_btn_text_x, restart_btn_text_y))
+		SCREEN.blit(end_btn_text, (end_btn_text_x, end_btn_text_y))
 
 
 		CLOCK.tick(FPS)
